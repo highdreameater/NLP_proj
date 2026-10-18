@@ -1,7 +1,7 @@
 # Technical Report: Financial Knowledge Graph + GraphRAG for Multi-Hop Questions
 
-**Author:** Rishang  
-**Context:** Advanced Financial Knowledge Graph & Multi-Hop QA (Prepared for LSEG AI/ML Problem Space)  
+**Author:** highdreameater  
+**Context:** Advanced Financial Knowledge Graph & Multi-Hop Question Answering  
 **Date:** October 2026  
 **Status:** Complete (v1.0)  
 
@@ -10,7 +10,7 @@
 ## 1. Executive Summary & Problem Formulation
 
 ### 1.1 The Practical Question
-Financial data providers like LSEG thrive on high-integrity, structured, and interconnected relationship data (subsidiaries, parent entities, supply chain dependencies, and geographic exposures). While modern Large Language Models (LLMs) paired with **Standard Vector RAG** provide robust semantic search for single-fact lookups, they systematically degrade when answering multi-hop queries that require chaining facts across multiple disparate filings and exhibits:
+Financial institutions, market intelligence platforms, and risk management teams thrive on high-integrity, structured, and interconnected relationship data (subsidiaries, parent entities, supply chain dependencies, and geographic exposures). While modern Large Language Models (LLMs) paired with **Standard Vector RAG** provide robust semantic search for single-fact lookups, they systematically degrade when answering multi-hop queries that require chaining facts across multiple disparate filings and exhibits:
 * *"Which of Apple's semiconductor manufacturing suppliers are exposed to natural disaster risks in Taiwan?"*
 * *"How is ASML connected to NVIDIA in the global hardware supply chain?"*
 * *"Which companies share TSMC as their primary foundry partner?"*
@@ -159,7 +159,7 @@ We performed a root-cause error taxonomy across all failed retrieval and answeri
 | **1. Intermediate Entity Gap** | 4 queries | The query does not mention the intermediate hop (e.g. asking for "Apple's lithography tools" without naming TSMC). Vector RAG misses TSMC chunks entirely. | S1/S2 multi-hop graph expansion recursively explores $k$-hop neighbors to discover TSMC automatically. |
 | **2. Alias / Ticker Polysemy** | 3 queries | Filings refer to "Hon Hai" or "Foxconn Technology", or use CIK strings. Vector RAG embeddings separate them into distant clusters. | Canonical `EntityResolver` normalizes names, tickers (`2317.TW`), and aliases into uniform node IDs. |
 | **3. Context Dilution** | 5 queries | Vector RAG retrieves 3 bulky 1000-character chunks containing hundreds of irrelevant customer names, diluting precision. | GraphRAG retrieves exact edge triples and concise evidence spans, cutting token noise. |
-| **4. Negative / Unstated Links** | 2 queries | Queries asking about relations absent from public filings (e.g., proprietary supplier pricing). | Implemented FR12 **Abstain behavior**: system cleanly declares insufficient evidence rather than hallucinating. |
+| **4. Negative / Unstated Links** | 2 queries | Queries asking about relations absent from public filings (e.g., proprietary supplier pricing). | Implemented strict **Abstain behavior**: system cleanly declares insufficient evidence rather than hallucinating. |
 
 ---
 
@@ -181,7 +181,7 @@ In financial institutional contexts, a raw token break-even is the wrong metric.
 
 ## 6. Reproducibility & Deliverables
 
-* **Repository:** [`https://github.com/rishang19dx/LSEG-GraphRAG.git`](https://github.com/rishang19dx/LSEG-GraphRAG.git)
+* **Repository:** [`https://github.com/highdreameater/NLP_proj.git`](https://github.com/highdreameater/NLP_proj.git)
 * **Codebase:** Fully typed, modular Python package (`lseg_graphrag`) with unit test suite (`pytest tests/`).
 * **Interactive Demo:** Streamlit dashboard (`streamlit run app/streamlit_app.py`) featuring interactive subgraph visualizer, side-by-side system comparison, and economic calculator.
 * **Graph Snapshot:** Exported property graph in `data/graphs/financial_kg.json` (83 canonical nodes, 141 edges).
